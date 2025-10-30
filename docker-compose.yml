@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Laravel 
+  app:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    container_name: todo_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html # นี่คือส่วนที่ "แม็ป" โปรเจกต์ของคุณเข้าไปใน Container
+    depends_on:
+      - db # สั่งให้รันหลังจาก db พร้อม
+
+  #  Nginx 
+  nginx:
+    image: nginx:alpine
+    container_name: todo_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80" # http://localhost:8000
+    volumes:
+      - .:/var/www/html 
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf 
+    depends_on:
+      - app
+
+  #  MySQL
+  db:
+    image: mysql:8.0
+    container_name: todo_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306" # เปิด Port 3306 ให้เชื่อมต่อจากเครื่องหลักได้ (ถ้าต้องการ)
+    environment:
+      MYSQL_DATABASE: todo_list_db
+      MYSQL_ROOT_PASSWORD: secret # <--- เปลี่ยนรหัสผ่านตรงนี้
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: 1234 # <--- เปลี่ยนรหัสผ่านตรงนี้
+    volumes:
+      - mysql_data:/var/lib/mysql 
+
+volumes:
+  mysql_data: 
+    driver: local
