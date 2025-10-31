@@ -13,6 +13,8 @@ services:
       - .:/var/www/html # นี่คือส่วนที่ "แม็ป" โปรเจกต์ของคุณเข้าไปใน Container
     depends_on:
       - db # สั่งให้รันหลังจาก db พร้อม
+    ports: 
+      - "5173:5173"
 
   #  Nginx 
   nginx:

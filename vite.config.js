@@ -8,4 +8,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0', // 1. บอก Server ให้ "รับฟัง" ที่ 0.0.0.0
+        hmr: {
+            host: 'localhost', // 2. บอก "เบราว์เซอร์" ให้เชื่อมต่อมาที่ localhost
+        },
+    }
 });
